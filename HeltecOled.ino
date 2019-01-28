@@ -19,7 +19,6 @@
 static const char* connectionString = "HostName=assignment-3-IoTHub.azure-devices.net;DeviceId=DeviceIoT2;SharedAccessKey=dZB2s8I/dDJfutKyF77gfn6Tk48lC0b1WqE0DHj4k54=";
 
 
-static bool hasWifi = false;
 static bool ledState = false;
 
 WiFiMulti wifiMulti;
@@ -49,7 +48,7 @@ void initMultiWifi() {
 	Serial.print(WiFi.localIP());
 	Serial.println("\r\n");
 	display.wifiConnected(WiFi.SSID().c_str(), WiFi.localIP().toString().c_str());
-	hasWifi = true;
+	
 }
 static void MessageCallback(const char* payLoad, int size)
 {
@@ -142,7 +141,6 @@ void setup()
 	Serial.println(" > WiFi");
 	display.WelcomeScreen();
 
-	hasWifi = false;
 	initMultiWifi();
 	randomSeed(micros());
 
@@ -157,14 +155,13 @@ void setup()
 
 void loop()
 {
-	if (hasWifi)
-		Esp32MQTTClient_Check();
 
 	if (wifiMulti.run() != WL_CONNECTED) {
 		Serial.println("WiFi not connected!");
 		display.ConnectingWifi(0);
 		delay(1000);
-	}
+	}else
+		Esp32MQTTClient_Check();
 
 	if (ledState)
 		digitalWrite(22, HIGH);
